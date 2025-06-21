@@ -30,7 +30,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _soilMoisture = 65;
   bool _isWatering = false;
   DateTime? _lastWateredTime;
-  int _selectedIndex = 0;
 
   final List<Map<String, dynamic>> _weatherForecast = [
     {'day': 'Hari Ini', 'icon': Icons.wb_sunny, 'temp': '28°C/23°C', 'rainChance': 20},
@@ -107,12 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
     return 'Terakhir disiram: ${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     final nextWateringTime = _soilMoisture < 60 
@@ -121,7 +114,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Aplikasi Pertanian'), // Changed from 'Beranda Pertanian'
+        title: const Text('Aplikasi Pertanian'),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -134,7 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Weather Card - simplified without duplicate title
+            // Weather Card
             Card(
               elevation: 3,
               child: Padding(
@@ -170,7 +163,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Soil Moisture Card - simplified
+            // Soil Moisture Card
             Card(
               elevation: 3,
               child: Padding(
@@ -209,7 +202,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Watering Schedule Card - simplified
+            // Watering Schedule Card
             Card(
               elevation: 3,
               child: Padding(
@@ -237,7 +230,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Weather Forecast - simplified
+            // Weather Forecast
             SizedBox(
               height: 120,
               child: ListView(
@@ -253,29 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Beranda',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.agriculture),
-            label: 'Pestisida',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.lightbulb),
-            label: 'Tips',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profil',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.green,
-        onTap: _onItemTapped,
-      ),
+      // Bottom navigation bar has been removed
     );
   }
 }
