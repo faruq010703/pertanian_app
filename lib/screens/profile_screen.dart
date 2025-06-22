@@ -1,19 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_screen.dart';
 
-// Add this class outside of your ProfileScreen class
-class FarmingFeature {
-  final IconData icon;
-  final String title;
-  final String details;
-
-  FarmingFeature({
-    required this.icon,
-    required this.title,
-    required this.details,
-  });
-}
-
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -22,15 +9,14 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String userName = 'Agus Setiawan';
-  String userRole = 'Petani Cabai Organik';
-  String userLocation = 'Jawa Barat, Indonesia';
-  String farmType = 'Budidaya Cabai Organik';
-  String landArea = '2 Hektar';
-  String joinDate = 'Januari 2022';
-  String userBio =
-      'Petani cabai organik dengan sistem irigasi tetes modern. Fokus pada pertanian berkelanjutan.';
-  String profileImageUrl = 'https://example.com/farmer-avatar.jpg';
+  String namaPengguna = 'Agus Setiawan';
+  String peranPengguna = 'Petani Cabai Organik';
+  String lokasiPengguna = 'Jawa Barat, Indonesia';
+  String jenisUsaha = 'Budidaya Cabai Organik';
+  String luasLahan = '2 Hektar';
+  String tanggalBergabung = 'Januari 2022';
+  String bioPengguna = 'Petani cabai organik dengan sistem irigasi tetes modern. Fokus pada pertanian berkelanjutan.';
+  String jenisKelamin = 'Perempuan';
 
   @override
   Widget build(BuildContext context) {
@@ -56,68 +42,158 @@ class _ProfileScreenState extends State<ProfileScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Editable Profile Header Section
-            _buildProfileHeader(),
+            _buatHeaderProfil(),
             const SizedBox(height: 24),
-            
-            // Editable User Information Section
-            _buildUserInfoSection(),
+            _buatBagianInfoPengguna(),
             const SizedBox(height: 24),
-            
-            // Farming Features Section
-            _buildFarmingFeaturesSection(),
+            _buatBagianFiturPertanian(),
           ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _showEditProfileDialog,
+        onPressed: _tampilkanDialogEditProfil,
         child: const Icon(Icons.edit),
         backgroundColor: Colors.green,
       ),
     );
   }
 
-  Widget _buildProfileHeader() {
-    return GestureDetector(
-      onTap: _changeProfilePicture,
-      child: Row(
-        children: [
-          CircleAvatar(
-            radius: 40,
-            backgroundImage: NetworkImage(profileImageUrl),
-            child: profileImageUrl.isEmpty
-                ? const Icon(Icons.person, size: 40)
-                : null,
+  Widget _buatHeaderProfil() {
+    return Row(
+      children: [
+        CircleAvatar(
+          radius: 40,
+          child: Icon(
+            jenisKelamin == 'Perempuan' ? Icons.female : Icons.male,
+            size: 40,
+            color: Colors.white,
           ),
-          const SizedBox(width: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          backgroundColor: jenisKelamin == 'Perempuan' ? Colors.pink : Colors.blue,
+        ),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              namaPengguna,
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              peranPengguna,
+              style: TextStyle(color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(
+                  jenisKelamin == 'Perempuan' ? Icons.female : Icons.male,
+                  size: 16,
+                  color: jenisKelamin == 'Perempuan' ? Colors.pink : Colors.blue,
+                ),
+                const SizedBox(width: 4),
+                Text(lokasiPengguna),
+              ],
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  void _tampilkanDialogEditProfil() {
+    final namaController = TextEditingController(text: namaPengguna);
+    final peranController = TextEditingController(text: peranPengguna);
+    final lokasiController = TextEditingController(text: lokasiPengguna);
+    final usahaController = TextEditingController(text: jenisUsaha);
+    final lahanController = TextEditingController(text: luasLahan);
+    final bergabungController = TextEditingController(text: tanggalBergabung);
+    final bioController = TextEditingController(text: bioPengguna);
+    String? jenisKelaminTerpilih = jenisKelamin;
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Profil'),
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                userName,
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              TextField(
+                controller: namaController,
+                decoration: const InputDecoration(labelText: 'Nama Lengkap'),
               ),
-              const SizedBox(height: 4),
-              Text(
-                userRole,
-                style: TextStyle(color: Colors.grey[600]),
+              TextField(
+                controller: peranController,
+                decoration: const InputDecoration(labelText: 'Peran/Pekerjaan'),
               ),
-              const SizedBox(height: 4),
-              Row(
-                children: [
-                  Icon(Icons.location_on, size: 16, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(userLocation),
-                ],
+              TextField(
+                controller: lokasiController,
+                decoration: const InputDecoration(labelText: 'Lokasi'),
+              ),
+              TextField(
+                controller: usahaController,
+                decoration: const InputDecoration(labelText: 'Jenis Usaha'),
+              ),
+              TextField(
+                controller: lahanController,
+                decoration: const InputDecoration(labelText: 'Luas Lahan'),
+              ),
+              TextField(
+                controller: bergabungController,
+                decoration: const InputDecoration(labelText: 'Tanggal Bergabung'),
+              ),
+              DropdownButtonFormField<String>(
+                value: jenisKelaminTerpilih,
+                items: ['Laki-laki', 'Perempuan'].map((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+                onChanged: (newValue) {
+                  jenisKelaminTerpilih = newValue;
+                },
+                decoration: const InputDecoration(labelText: 'Jenis Kelamin'),
+              ),
+              TextField(
+                controller: bioController,
+                maxLines: 3,
+                decoration: const InputDecoration(labelText: 'Deskripsi'),
               ),
             ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Batal'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              setState(() {
+                namaPengguna = namaController.text;
+                peranPengguna = peranController.text;
+                lokasiPengguna = lokasiController.text;
+                jenisUsaha = usahaController.text;
+                luasLahan = lahanController.text;
+                tanggalBergabung = bergabungController.text;
+                bioPengguna = bioController.text;
+                jenisKelamin = jenisKelaminTerpilih ?? jenisKelamin;
+              });
+              Navigator.pop(context);
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Profil berhasil diperbarui')),
+              );
+            },
+            child: const Text('Simpan'),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildUserInfoSection() {
+  Widget _buatBagianInfoPengguna() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -126,33 +202,49 @@ class _ProfileScreenState extends State<ProfileScreen> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 12),
-        _buildInfoItem(Icons.agriculture, 'Jenis Usaha', farmType),
-        _buildInfoItem(Icons.landscape, 'Luas Lahan', landArea),
-        _buildInfoItem(Icons.calendar_today, 'Bergabung Sejak', joinDate),
-        _buildInfoItem(Icons.description, 'Deskripsi', userBio),
+        _buatItemInfo(Icons.person, 'Nama Lengkap', namaPengguna),
+        _buatItemInfo(Icons.work, 'Peran/Pekerjaan', peranPengguna),
+        _buatItemInfo(Icons.location_on, 'Lokasi', lokasiPengguna),
+        _buatItemInfo(Icons.agriculture, 'Jenis Usaha', jenisUsaha),
+        _buatItemInfo(Icons.landscape, 'Luas Lahan', luasLahan),
+        _buatItemInfo(Icons.calendar_today, 'Bergabung Sejak', tanggalBergabung),
+        _buatItemInfo(
+          jenisKelamin == 'Perempuan' ? Icons.female : Icons.male,
+          'Jenis Kelamin', 
+          jenisKelamin
+        ),
+        _buatItemInfo(Icons.description, 'Deskripsi', bioPengguna),
       ],
     );
   }
 
-  Widget _buildInfoItem(IconData icon, String title, String value) {
+  Widget _buatItemInfo(IconData ikon, String judul, String nilai) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: Colors.green[700]),
+          Icon(
+            ikon, 
+            size: 20, 
+            color: ikon == Icons.female 
+              ? Colors.pink 
+              : ikon == Icons.male 
+                ? Colors.blue 
+                : Colors.green[700],
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  judul,
                   style: TextStyle(color: Colors.grey[600], fontSize: 14),
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  value,
+                  nilai,
                   style: const TextStyle(fontSize: 16),
                 ),
               ],
@@ -163,29 +255,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildFarmingFeaturesSection() {
-    // Define farming features data
-    final List<FarmingFeature> features = [
-      FarmingFeature(
-        icon: Icons.wb_sunny,
-        title: 'Monitoring Iklim',
-        details: 'Suhu: 28°C\nKelembaban: 75%',
-      ),
-      FarmingFeature(
-        icon: Icons.calendar_month,
-        title: 'Kalender Tanam',
-        details: 'Tanam: 5 Jun\nPanen: 15 Ags',
-      ),
-      FarmingFeature(
-        icon: Icons.attach_money,
-        title: 'Catatan Keuangan',
-        details: 'Pendapatan: Rp12.5jt\nPengeluaran: Rp8.2jt',
-      ),
-      FarmingFeature(
-        icon: Icons.insights,
-        title: 'Analisis Tanah',
-        details: 'pH: 6.2\nNitrogen: Sedang',
-      ),
+  Widget _buatBagianFiturPertanian() {
+    final List<Map<String, dynamic>> fitur = [
+      {
+        'ikon': Icons.wb_sunny,
+        'judul': 'Monitoring Iklim',
+        'detail': 'Suhu: 28°C\nKelembaban: 75%',
+      },
+      {
+        'ikon': Icons.calendar_month,
+        'judul': 'Kalender Tanam',
+        'detail': 'Tanam: 5 Jun\nPanen: 15 Ags',
+      },
+      {
+        'ikon': Icons.attach_money,
+        'judul': 'Catatan Keuangan',
+        'detail': 'Pendapatan: Rp12.5jt\nPengeluaran: Rp8.2jt',
+      },
+      {
+        'ikon': Icons.insights,
+        'judul': 'Analisis Tanah',
+        'detail': 'pH: 6.2\nNitrogen: Sedang',
+      },
     ];
 
     return Column(
@@ -201,196 +292,52 @@ class _ProfileScreenState extends State<ProfileScreen> {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 1.5,
-            crossAxisSpacing: 12,
-            mainAxisSpacing: 12,
+            childAspectRatio: 1.0,
+            crossAxisSpacing: 8,
+            mainAxisSpacing: 8,
           ),
-          itemCount: features.length,
+          itemCount: fitur.length,
           itemBuilder: (context, index) {
-            return _buildFeatureCard(
-              features[index].icon,
-              features[index].title,
-              features[index].details,
+            return Card(
+              elevation: 2,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Icon(fitur[index]['ikon'], size: 24, color: Colors.green[700]),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          fitur[index]['judul'],
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          fitur[index]['detail'],
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.grey[600],
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             );
           },
         ),
       ],
-    );
-  }
-
-  Widget _buildFeatureCard(IconData icon, String title, String details) {
-    return Card(
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Icon(icon, size: 30, color: Colors.green[700]),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  details,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey[600],
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _changeProfilePicture() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Ubah Foto Profil'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListTile(
-              leading: const Icon(Icons.camera_alt),
-              title: const Text('Ambil Foto'),
-              onTap: () {
-                // Implement camera functionality
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.photo_library),
-              title: const Text('Pilih dari Galeri'),
-              onTap: () {
-                // Implement gallery picker functionality
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.link),
-              title: const Text('Masukkan URL Gambar'),
-              onTap: () {
-                Navigator.pop(context);
-                _showImageUrlDialog();
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showImageUrlDialog() {
-    TextEditingController urlController = TextEditingController();
-    
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Masukkan URL Gambar'),
-        content: TextField(
-          controller: urlController,
-          decoration: const InputDecoration(hintText: 'https://example.com/image.jpg'),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          TextButton(
-            onPressed: () {
-              setState(() {
-                profileImageUrl = urlController.text;
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showEditProfileDialog() {
-    TextEditingController nameController = TextEditingController(text: userName);
-    TextEditingController roleController = TextEditingController(text: userRole);
-    TextEditingController locationController = TextEditingController(text: userLocation);
-    TextEditingController farmTypeController = TextEditingController(text: farmType);
-    TextEditingController landAreaController = TextEditingController(text: landArea);
-    TextEditingController bioController = TextEditingController(text: userBio);
-
-    showDialog(
-      context: context,
-      builder: (context) => SingleChildScrollView(
-        child: AlertDialog(
-          title: const Text('Edit Profil'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Nama Lengkap'),
-              ),
-              TextField(
-                controller: roleController,
-                decoration: const InputDecoration(labelText: 'Peran/Pekerjaan'),
-              ),
-              TextField(
-                controller: locationController,
-                decoration: const InputDecoration(labelText: 'Lokasi'),
-              ),
-              TextField(
-                controller: farmTypeController,
-                decoration: const InputDecoration(labelText: 'Jenis Usaha Tani'),
-              ),
-              TextField(
-                controller: landAreaController,
-                decoration: const InputDecoration(labelText: 'Luas Lahan'),
-              ),
-              TextField(
-                controller: bioController,
-                maxLines: 3,
-                decoration: const InputDecoration(labelText: 'Deskripsi/Bio'),
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
-            ),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  userName = nameController.text;
-                  userRole = roleController.text;
-                  userLocation = locationController.text;
-                  farmType = farmTypeController.text;
-                  landArea = landAreaController.text;
-                  userBio = bioController.text;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('Simpan'),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
