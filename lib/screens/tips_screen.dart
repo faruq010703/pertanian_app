@@ -1,7 +1,54 @@
 import 'package:flutter/material.dart';
 
-class TipsScreen extends StatelessWidget {
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Tips Pertanian',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: const TipsScreen(),
+    );
+  }
+}
+
+class TipsScreen extends StatefulWidget {
   const TipsScreen({super.key});
+
+  @override
+  State<TipsScreen> createState() => _TipsScreenState();
+}
+
+class _TipsScreenState extends State<TipsScreen> {
+  final List<Map<String, dynamic>> _favoriteTips = [];
+
+  void _addToFavorites(Map<String, dynamic> tip) {
+    setState(() {
+      if (!_favoriteTips.any((fav) => fav['title'] == tip['title'])) {
+        _favoriteTips.add(tip);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${tip['title']} ditambahkan ke favorit')),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${tip['title']} sudah ada di favorit')),
+        );
+      }
+    });
+  }
+
+  void _removeFromFavorites(String title) {
+    setState(() {
+      _favoriteTips.removeWhere((fav) => fav['title'] == title);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +65,20 @@ class TipsScreen extends StatelessWidget {
               );
             },
           ),
+          IconButton(
+            icon: const Icon(Icons.favorite),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => FavoritesScreen(
+                    favoriteTips: _favoriteTips,
+                    onRemove: _removeFromFavorites,
+                  ),
+                ),
+              );
+            },
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -29,24 +90,33 @@ class TipsScreen extends StatelessWidget {
             _buildSectionTitle('Cara Merawat Tanaman'),
             _buildTipCard(
               context,
-              'Penyiraman yang Tepat',
-              Icons.water_drop,
-              Colors.blue,
-              'Siram tanaman di pagi atau sore hari. Hindari menyiram daun secara langsung untuk mencegah jamur.',
+              {
+                'title': 'Penyiraman yang Tepat',
+                'icon': Icons.water_drop,
+                'color': Colors.blue,
+                'description': 'Siram tanaman di pagi atau sore hari. Hindari menyiram daun secara langsung untuk mencegah jamur.',
+              },
+              _addToFavorites,
             ),
             _buildTipCard(
               context,
-              'Pemupukan Berkala',
-              Icons.grass,
-              Colors.green,
-              'Gunakan pupuk organik setiap 2 minggu. Untuk tanaman buah, gunakan pupuk tinggi fosfor saat berbunga.',
+              {
+                'title': 'Pemupukan Berkala',
+                'icon': Icons.grass,
+                'color': Colors.green,
+                'description': 'Gunakan pupuk organik setiap 2 minggu. Untuk tanaman buah, gunakan pupuk tinggi fosfor saat berbunga.',
+              },
+              _addToFavorites,
             ),
             _buildTipCard(
               context,
-              'Pencahayaan Optimal',
-              Icons.light_mode,
-              Colors.amber,
-              'Kenali kebutuhan cahaya tanaman. Tanaman hias umumnya butuh cahaya tidak langsung, sementara sayuran butuh sinar matahari penuh.',
+              {
+                'title': 'Pencahayaan Optimal',
+                'icon': Icons.light_mode,
+                'color': Colors.amber,
+                'description': 'Kenali kebutuhan cahaya tanaman. Tanaman hias umumnya butuh cahaya tidak langsung, sementara sayuran butuh sinar matahari penuh.',
+              },
+              _addToFavorites,
             ),
 
             // Section 2: Enhanced Disease Detection
@@ -54,39 +124,48 @@ class TipsScreen extends StatelessWidget {
             _buildSectionTitle('Deteksi Penyakit Tanaman'),
             _buildDiseaseCard(
               context,
-              'Daun Menguning',
-              Icons.warning,
-              Colors.amber,
-              [
-                'Gejala: Daun menguning, pertumbuhan terhambat',
-                'Penyebab: Kekurangan nitrogen, overwatering, atau jamur',
-                'Solusi: Periksa kelembaban tanah, beri pupuk nitrogen',
-                'Pencegahan: Jaga drainase tanah, rotasi tanaman'
-              ],
+              {
+                'title': 'Daun Menguning',
+                'icon': Icons.warning,
+                'color': Colors.amber,
+                'details': [
+                  'Gejala: Daun menguning, pertumbuhan terhambat',
+                  'Penyebab: Kekurangan nitrogen, overwatering, atau jamur',
+                  'Solusi: Periksa kelembaban tanah, beri pupuk nitrogen',
+                  'Pencegahan: Jaga drainase tanah, rotasi tanaman'
+                ],
+              },
+              _addToFavorites,
             ),
             _buildDiseaseCard(
               context,
-              'Bercak Hitam pada Daun',
-              Icons.bug_report,
-              Colors.red,
-              [
-                'Gejala: Bercak hitam/coklat dengan pinggiran kuning',
-                'Penyebab: Jamur antraknosa atau bakteri',
-                'Solusi: Potong daun terinfeksi, semprot fungisida alami',
-                'Pencegahan: Hindari penyiraman dari atas, jaga sirkulasi udara'
-              ],
+              {
+                'title': 'Bercak Hitam pada Daun',
+                'icon': Icons.bug_report,
+                'color': Colors.red,
+                'details': [
+                  'Gejala: Bercak hitam/coklat dengan pinggiran kuning',
+                  'Penyebab: Jamur antraknosa atau bakteri',
+                  'Solusi: Potong daun terinfeksi, semprot fungisida alami',
+                  'Pencegahan: Hindari penyiraman dari atas, jaga sirkulasi udara'
+                ],
+              },
+              _addToFavorites,
             ),
             _buildDiseaseCard(
               context,
-              'Tanaman Layu',
-              Icons.sick,
-              Colors.brown,
-              [
-                'Gejala: Tanaman layu meski tanah cukup air',
-                'Penyebab: Akar busuk atau penyakit layu fusarium',
-                'Solusi: Periksa akar, ganti media tanam jika busuk',
-                'Pencegahan: Gunakan media tanam steril, jangan overwatering'
-              ],
+              {
+                'title': 'Tanaman Layu',
+                'icon': Icons.sick,
+                'color': Colors.brown,
+                'details': [
+                  'Gejala: Tanaman layu meski tanah cukup air',
+                  'Penyebab: Akar busuk atau penyakit layu fusarium',
+                  'Solusi: Periksa akar, ganti media tanam jika busuk',
+                  'Pencegahan: Gunakan media tanam steril, jangan overwatering'
+                ],
+              },
+              _addToFavorites,
             ),
 
             // Section 3: Land Maintenance
@@ -94,21 +173,30 @@ class TipsScreen extends StatelessWidget {
             _buildSectionTitle('Perawatan Lahan'),
             _buildLandTipCard(
               context,
-              'Rotasi Tanaman',
-              Icons.autorenew,
-              'Berganti jenis tanaman setiap musim untuk menjaga kesuburan tanah dan mengurangi hama.',
+              {
+                'title': 'Rotasi Tanaman',
+                'icon': Icons.autorenew,
+                'description': 'Berganti jenis tanaman setiap musim untuk menjaga kesuburan tanah dan mengurangi hama.',
+              },
+              _addToFavorites,
             ),
             _buildLandTipCard(
               context,
-              'Pengolahan Tanah',
-              Icons.agriculture,
-              'Gemburkan tanah sebelum menanam dan tambahkan kompos untuk meningkatkan aerasi dan nutrisi.',
+              {
+                'title': 'Pengolahan Tanah',
+                'icon': Icons.agriculture,
+                'description': 'Gemburkan tanah sebelum menanam dan tambahkan kompos untuk meningkatkan aerasi dan nutrisi.',
+              },
+              _addToFavorites,
             ),
             _buildLandTipCard(
               context,
-              'Pengendalian Gulma',
-              Icons.forest,
-              'Cabut gulma secara rutin atau gunakan mulsa organik untuk menekan pertumbuhannya.',
+              {
+                'title': 'Pengendalian Gulma',
+                'icon': Icons.forest,
+                'description': 'Cabut gulma secara rutin atau gunakan mulsa organik untuk menekan pertumbuhannya.',
+              },
+              _addToFavorites,
             ),
           ],
         ),
@@ -130,7 +218,11 @@ class TipsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildTipCard(BuildContext context, String title, IconData icon, Color color, String description) {
+  Widget _buildTipCard(
+    BuildContext context,
+    Map<String, dynamic> tip,
+    Function(Map<String, dynamic>) onAddFavorite,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: Padding(
@@ -141,10 +233,10 @@ class TipsScreen extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: color.withOpacity(0.2),
+                color: tip['color'].withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
-              child: Icon(icon, color: color),
+              child: Icon(tip['icon'], color: tip['color']),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -152,7 +244,7 @@ class TipsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    title,
+                    tip['title'],
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -160,7 +252,7 @@ class TipsScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    description,
+                    tip['description'],
                     style: TextStyle(
                       color: Colors.grey[700],
                     ),
@@ -168,13 +260,21 @@ class TipsScreen extends StatelessWidget {
                 ],
               ),
             ),
+            IconButton(
+              icon: const Icon(Icons.favorite_border),
+              onPressed: () => onAddFavorite(tip),
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildDiseaseCard(BuildContext context, String title, IconData icon, Color color, List<String> details) {
+  Widget _buildDiseaseCard(
+    BuildContext context,
+    Map<String, dynamic> disease,
+    Function(Map<String, dynamic>) onAddFavorite,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 2,
@@ -184,10 +284,11 @@ class TipsScreen extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => DiseaseDetailScreen(
-                title: title,
-                icon: icon,
-                color: color,
-                details: details,
+                title: disease['title'],
+                icon: disease['icon'],
+                color: disease['color'],
+                details: disease['details'],
+                onAddFavorite: () => onAddFavorite(disease),
               ),
             ),
           );
@@ -202,20 +303,24 @@ class TipsScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: color.withOpacity(0.2),
+                      color: disease['color'].withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(icon, color: color, size: 24),
+                    child: Icon(disease['icon'], color: disease['color'], size: 24),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      title,
+                      disease['title'],
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.favorite_border),
+                    onPressed: () => onAddFavorite(disease),
                   ),
                 ],
               ),
@@ -225,12 +330,12 @@ class TipsScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    details[0],
+                    disease['details'][0],
                     style: const TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    details[1],
+                    disease['details'][1],
                     style: const TextStyle(fontSize: 14),
                   ),
                 ],
@@ -256,24 +361,32 @@ class TipsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLandTipCard(BuildContext context, String title, IconData icon, String description) {
+  Widget _buildLandTipCard(
+    BuildContext context,
+    Map<String, dynamic> tip,
+    Function(Map<String, dynamic>) onAddFavorite,
+  ) {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        leading: Icon(icon, color: Colors.green),
+        leading: Icon(tip['icon'], color: Colors.green),
         title: Text(
-          title,
+          tip['title'],
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(description),
-        trailing: const Icon(Icons.chevron_right),
+        subtitle: Text(tip['description']),
+        trailing: IconButton(
+          icon: const Icon(Icons.favorite_border),
+          onPressed: () => onAddFavorite(tip),
+        ),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => TipDetailScreen(
-                title: title,
-                description: description,
+                title: tip['title'],
+                description: tip['description'],
+                onAddFavorite: () => onAddFavorite(tip),
               ),
             ),
           );
@@ -288,6 +401,7 @@ class DiseaseDetailScreen extends StatelessWidget {
   final IconData icon;
   final Color color;
   final List<String> details;
+  final VoidCallback onAddFavorite;
 
   const DiseaseDetailScreen({
     super.key,
@@ -295,6 +409,7 @@ class DiseaseDetailScreen extends StatelessWidget {
     required this.icon,
     required this.color,
     required this.details,
+    required this.onAddFavorite,
   });
 
   @override
@@ -343,11 +458,7 @@ class DiseaseDetailScreen extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Ditambahkan ke favorit')),
-          );
-        },
+        onPressed: onAddFavorite,
         child: const Icon(Icons.favorite_border),
       ),
     );
@@ -413,11 +524,13 @@ class DiseaseDetailScreen extends StatelessWidget {
 class TipDetailScreen extends StatelessWidget {
   final String title;
   final String description;
+  final VoidCallback onAddFavorite;
 
   const TipDetailScreen({
     super.key,
     required this.title,
     required this.description,
+    required this.onAddFavorite,
   });
 
   @override
@@ -457,7 +570,7 @@ class TipDetailScreen extends StatelessWidget {
             const Spacer(),
             Center(
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: onAddFavorite,
                 child: const Text('Simpan ke Favorit'),
               ),
             ),
@@ -482,6 +595,84 @@ class TipDetailScreen extends StatelessWidget {
 }
 
 class TipsSearchDelegate extends SearchDelegate {
+  final List<Map<String, dynamic>> allTips = [
+    {
+      'title': 'Penyiraman yang Tepat',
+      'icon': Icons.water_drop,
+      'color': Colors.blue,
+      'description': 'Siram tanaman di pagi atau sore hari. Hindari menyiram daun secara langsung untuk mencegah jamur.',
+      'type': 'tip',
+    },
+    {
+      'title': 'Pemupukan Berkala',
+      'icon': Icons.grass,
+      'color': Colors.green,
+      'description': 'Gunakan pupuk organik setiap 2 minggu. Untuk tanaman buah, gunakan pupuk tinggi fosfor saat berbunga.',
+      'type': 'tip',
+    },
+    {
+      'title': 'Pencahayaan Optimal',
+      'icon': Icons.light_mode,
+      'color': Colors.amber,
+      'description': 'Kenali kebutuhan cahaya tanaman. Tanaman hias umumnya butuh cahaya tidak langsung, sementara sayuran butuh sinar matahari penuh.',
+      'type': 'tip',
+    },
+    {
+      'title': 'Daun Menguning',
+      'icon': Icons.warning,
+      'color': Colors.amber,
+      'details': [
+        'Gejala: Daun menguning, pertumbuhan terhambat',
+        'Penyebab: Kekurangan nitrogen, overwatering, atau jamur',
+        'Solusi: Periksa kelembaban tanah, beri pupuk nitrogen',
+        'Pencegahan: Jaga drainase tanah, rotasi tanaman'
+      ],
+      'type': 'disease',
+    },
+    {
+      'title': 'Bercak Hitam pada Daun',
+      'icon': Icons.bug_report,
+      'color': Colors.red,
+      'details': [
+        'Gejala: Bercak hitam/coklat dengan pinggiran kuning',
+        'Penyebab: Jamur antraknosa atau bakteri',
+        'Solusi: Potong daun terinfeksi, semprot fungisida alami',
+        'Pencegahan: Hindari penyiraman dari atas, jaga sirkulasi udara'
+      ],
+      'type': 'disease',
+    },
+    {
+      'title': 'Tanaman Layu',
+      'icon': Icons.sick,
+      'color': Colors.brown,
+      'details': [
+        'Gejala: Tanaman layu meski tanah cukup air',
+        'Penyebab: Akar busuk atau penyakit layu fusarium',
+        'Solusi: Periksa akar, ganti media tanam jika busuk',
+        'Pencegahan: Gunakan media tanam steril, jangan overwatering'
+      ],
+      'type': 'disease',
+    },
+    {
+      'title': 'Rotasi Tanaman',
+      'icon': Icons.autorenew,
+      'description': 'Berganti jenis tanaman setiap musim untuk menjaga kesuburan tanah dan mengurangi hama.',
+      'type': 'land',
+    },
+    {
+      'title': 'Pengolahan Tanah',
+      'icon': Icons.agriculture,
+      'description': 'Gemburkan tanah sebelum menanam dan tambahkan kompos untuk meningkatkan aerasi dan nutrisi.',
+      'type': 'land',
+    },
+    {
+      'title': 'Pengendalian Gulma',
+      'icon': Icons.forest,
+      'description': 'Cabut gulma secara rutin atau gunakan mulsa organik untuk menekan pertumbuhannya.',
+      'type': 'land',
+    },
+  ];
+
   @override
   List<Widget> buildActions(BuildContext context) {
     return [
@@ -515,8 +706,125 @@ class TipsSearchDelegate extends SearchDelegate {
   }
 
   Widget _buildSearchResults() {
-    return Center(
-      child: Text('Hasil pencarian untuk "$query"'),
+    final List<Map<String, dynamic>> searchResults = query.isEmpty
+        ? []
+        : allTips.where((tip) {
+            return tip['title'].toLowerCase().contains(query.toLowerCase()) ||
+                (tip['description'] != null && tip['description'].toLowerCase().contains(query.toLowerCase())) ||
+                (tip['details'] != null && tip['details'].any((detail) => detail.toLowerCase().contains(query.toLowerCase())));
+          }).toList();
+
+    return ListView.builder(
+      itemCount: searchResults.length,
+      itemBuilder: (context, index) {
+        final tip = searchResults[index];
+        return ListTile(
+          leading: Icon(tip['icon'], color: tip['color']),
+          title: Text(tip['title']),
+          subtitle: tip['description'] != null
+              ? Text(tip['description'])
+              : tip['details'] != null
+                  ? Text(tip['details'][0])
+                  : null,
+          onTap: () {
+            if (tip['type'] == 'disease') {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DiseaseDetailScreen(
+                    title: tip['title'],
+                    icon: tip['icon'],
+                    color: tip['color'],
+                    details: tip['details'],
+                    onAddFavorite: () {}, // Empty callback for search results
+                  ),
+                ),
+              );
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TipDetailScreen(
+                    title: tip['title'],
+                    description: tip['description'] ?? tip['details'].join('\n'),
+                    onAddFavorite: () {}, // Empty callback for search results
+                  ),
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
+  }
+}
+
+class FavoritesScreen extends StatelessWidget {
+  final List<Map<String, dynamic>> favoriteTips;
+  final Function(String) onRemove;
+
+  const FavoritesScreen({
+    super.key,
+    required this.favoriteTips,
+    required this.onRemove,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Tips Favorit'),
+      ),
+      body: favoriteTips.isEmpty
+          ? const Center(
+              child: Text('Belum ada tips favorit'),
+            )
+          : ListView.builder(
+              itemCount: favoriteTips.length,
+              itemBuilder: (context, index) {
+                final tip = favoriteTips[index];
+                return ListTile(
+                  leading: Icon(tip['icon'], color: tip['color']),
+                  title: Text(tip['title']),
+                  subtitle: tip['description'] != null
+                      ? Text(tip['description'])
+                      : tip['details'] != null
+                          ? Text(tip['details'][0])
+                          : null,
+                  trailing: IconButton(
+                    icon: const Icon(Icons.favorite, color: Colors.red),
+                    onPressed: () => onRemove(tip['title']),
+                  ),
+                  onTap: () {
+                    if (tip['details'] != null) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => DiseaseDetailScreen(
+                            title: tip['title'],
+                            icon: tip['icon'],
+                            color: tip['color'],
+                            details: tip['details'],
+                            onAddFavorite: () {}, // Empty callback for favorites
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TipDetailScreen(
+                            title: tip['title'],
+                            description: tip['description'] ?? '',
+                            onAddFavorite: () {}, // Empty callback for favorites
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                );
+              },
+            ),
     );
   }
 }

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: MarketScreen(),
-  ));
+  runApp(const MaterialApp(home: MarketScreen()));
 }
 
 class MarketScreen extends StatefulWidget {
@@ -42,34 +40,31 @@ class _MarketScreenState extends State<MarketScreen> {
         "rainfall": "150 mm/bulan",
         "humidity": "80%",
         "sunlight": "8 jam/hari",
-        "wind_speed": "10 km/jam"
+        "wind_speed": "10 km/jam",
       },
       "pest_data": [
         {
           "pest_name": "Wereng coklat",
           "symptoms": "Daun menguning, tanaman kerdil",
           "control_method": "Pestisida sistemik",
-          "attack_history": "Serangan ringan bulan lalu"
-        }
+          "attack_history": "Serangan ringan bulan lalu",
+        },
       ],
       "fertilization": [
         {
           "fertilizer_type": "NPK",
           "dosage": "300 kg/ha",
-          "schedule": "2 minggu setelah tanam"
-        }
+          "schedule": "2 minggu setelah tanam",
+        },
       ],
-      "watering": {
-        "frequency": "2 hari sekali",
-        "volume": "5 cm genangan"
-      },
+      "watering": {"frequency": "2 hari sekali", "volume": "5 cm genangan"},
       "production": {
         "yield": "9 ton",
         "production_cost": "Rp15.000.000",
         "selling_price": "Rp12.500/kg",
         "profit": "Rp97.500.000",
         "harvest_time": "90 HST",
-        "quality": "Grade A"
+        "quality": "Grade A",
       },
       "market_data": {
         "daily_price": "Rp12.000-Rp13.000/kg",
@@ -77,7 +72,7 @@ class _MarketScreenState extends State<MarketScreen> {
         "supply": "Cukup",
         "distribution_chain": "Petani → Pengumpul → Pasar Induk",
         "nearest_market": "Pasar Induk Kramat Jati",
-        "trending": true
+        "trending": true,
       },
       "farmer_data": {
         "name": "Budi Santoso",
@@ -86,8 +81,8 @@ class _MarketScreenState extends State<MarketScreen> {
         "farmer_group": "Kelompok Tani Sumber Rejeki",
         "experience": "15 tahun",
         "contact": "081234567890",
-        "address": "Desa Sukamaju, Kec. Cibitung, Kab. Bekasi"
-      }
+        "address": "Desa Sukamaju, Kec. Cibitung, Kab. Bekasi",
+      },
     },
   ];
 
@@ -100,20 +95,20 @@ class _MarketScreenState extends State<MarketScreen> {
     'Peternakan',
     'Umbi-umbian',
     'Buah',
-    'Perkebunan'
+    'Perkebunan',
   ];
 
   final List<String> _plantingSeasons = [
     'Musim Hujan',
     'Musim Kemarau',
-    'Sepanjang Tahun'
+    'Sepanjang Tahun',
   ];
 
   final List<String> _cultivationMethods = [
     'Konvensional',
     'Organik',
     'Hidroponik',
-    'Vertikultur'
+    'Vertikultur',
   ];
 
   final List<String> _soilTypes = [
@@ -121,14 +116,14 @@ class _MarketScreenState extends State<MarketScreen> {
     'Pasir',
     'Liat',
     'Gambut',
-    'Berpasir'
+    'Berpasir',
   ];
 
   final List<String> _waterAvailability = [
     'Irigasi teknis',
     'Irigasi semi teknis',
     'Tadah hujan',
-    'Pompa air'
+    'Pompa air',
   ];
 
   final List<String> _marketDemand = ['Tinggi', 'Sedang', 'Rendah'];
@@ -139,11 +134,12 @@ class _MarketScreenState extends State<MarketScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CommodityDetailScreen(
-          commodityData: commodityData,
-          onEdit: (editedData) => _editCommodity(editedData),
-          onDelete: () => _deleteCommodity(commodityData['id']),
-        ),
+        builder:
+            (context) => CommodityDetailScreen(
+              commodityData: commodityData,
+              onEdit: (editedData) => _editCommodity(editedData),
+              onDelete: () => _deleteCommodity(commodityData['id']),
+            ),
       ),
     );
   }
@@ -152,18 +148,19 @@ class _MarketScreenState extends State<MarketScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CommodityEditScreen(
-          commodityData: null,
-          categories: _categories,
-          plantingSeasons: _plantingSeasons,
-          cultivationMethods: _cultivationMethods,
-          soilTypes: _soilTypes,
-          waterAvailability: _waterAvailability,
-          marketDemand: _marketDemand,
-          marketSupply: _marketSupply,
-          qualityLevels: _qualityLevels,
-          onSave: (newData) => _addCommodity(newData),
-        ),
+        builder:
+            (context) => CommodityEditScreen(
+              commodityData: null,
+              categories: _categories,
+              plantingSeasons: _plantingSeasons,
+              cultivationMethods: _cultivationMethods,
+              soilTypes: _soilTypes,
+              waterAvailability: _waterAvailability,
+              marketDemand: _marketDemand,
+              marketSupply: _marketSupply,
+              qualityLevels: _qualityLevels,
+              onSave: (newData) => _addCommodity(newData),
+            ),
       ),
     );
   }
@@ -183,7 +180,9 @@ class _MarketScreenState extends State<MarketScreen> {
 
   void _editCommodity(Map<String, dynamic> editedData) {
     setState(() {
-      int index = _marketData.indexWhere((item) => item['id'] == editedData['id']);
+      int index = _marketData.indexWhere(
+        (item) => item['id'] == editedData['id'],
+      );
       if (index != -1) {
         _marketData[index] = editedData;
       }
@@ -197,9 +196,9 @@ class _MarketScreenState extends State<MarketScreen> {
     setState(() {
       _marketData.removeWhere((item) => item['id'] == id);
     });
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Komoditas telah dihapus')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Komoditas telah dihapus')));
     Navigator.pop(context); // Close detail screen if deleting from there
   }
 
@@ -216,79 +215,97 @@ class _MarketScreenState extends State<MarketScreen> {
           ),
         ],
       ),
-      body: _marketData.isEmpty
-          ? const Center(
-              child: Text(
-                'Tidak ada data tersedia',
-                style: TextStyle(fontSize: 18),
-              ),
-            )
-          : ListView.builder(
-              itemCount: _marketData.length,
-              itemBuilder: (context, index) {
-                final item = _marketData[index];
-                return Card(
-                  margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  elevation: 2,
-                  child: InkWell(
-                    onTap: () => _navigateToDetail(item),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              _getCategoryIcon(item['category']),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  item['commodity'],
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 18,
+      body:
+          _marketData.isEmpty
+              ? const Center(
+                child: Text(
+                  'Tidak ada data tersedia',
+                  style: TextStyle(fontSize: 18),
+                ),
+              )
+              : ListView.builder(
+                itemCount: _marketData.length,
+                itemBuilder: (context, index) {
+                  final item = _marketData[index];
+                  return Card(
+                    margin: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 5,
+                    ),
+                    elevation: 2,
+                    child: InkWell(
+                      onTap: () => _navigateToDetail(item),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                _getCategoryIcon(item['category']),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    item['commodity'],
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 18,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () => _deleteCommodity(item['id']),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 8),
-                          _buildInfoRow(Icons.monetization_on, 
-                              'Harga: Rp${item['price'].toString().replaceAllMapped(
-                                RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-                                (Match m) => '${m[1]}.',
-                              )}'),
-                          _buildInfoRow(Icons.location_on, 'Lokasi: ${item['location']}'),
-                          _buildInfoRow(Icons.category, 'Kategori: ${item['category']}'),
-                          const SizedBox(height: 8),
-                          const Text(
-                            'Informasi Tambahan:',
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          _buildInfoRow(Icons.agriculture, 
-                              'Varietas: ${item['variety'] ?? '-'}'),
-                          _buildInfoRow(Icons.landscape, 
-                              'Luas Lahan: ${item['land_area'] ?? '-'}'),
-                          _buildInfoRow(Icons.people, 
-                              'Petani: ${item['farmer_data']?['name'] ?? '-'}'),
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () => _navigateToDetail(item),
-                              child: const Text('Lihat Detail →'),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () => _deleteCommodity(item['id']),
+                                ),
+                              ],
                             ),
-                          ),
-                        ],
+                            const SizedBox(height: 8),
+                            _buildInfoRow(
+                              Icons.monetization_on,
+                              'Harga: Rp${item['price'].toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]}.')}',
+                            ),
+                            _buildInfoRow(
+                              Icons.location_on,
+                              'Lokasi: ${item['location']}',
+                            ),
+                            _buildInfoRow(
+                              Icons.category,
+                              'Kategori: ${item['category']}',
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Informasi Tambahan:',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            _buildInfoRow(
+                              Icons.agriculture,
+                              'Varietas: ${item['variety'] ?? '-'}',
+                            ),
+                            _buildInfoRow(
+                              Icons.landscape,
+                              'Luas Lahan: ${item['land_area'] ?? '-'}',
+                            ),
+                            _buildInfoRow(
+                              Icons.people,
+                              'Petani: ${item['farmer_data']?['name'] ?? '-'}',
+                            ),
+                            Align(
+                              alignment: Alignment.centerRight,
+                              child: TextButton(
+                                onPressed: () => _navigateToDetail(item),
+                                child: const Text('Lihat Detail →'),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
     );
   }
 
@@ -384,40 +401,70 @@ class CommodityDetailScreen extends StatelessWidget {
               _buildDetailItem('Tanggal Tanam', commodityData['planting_date']),
               _buildDetailItem('Tanggal Panen', commodityData['harvest_date']),
               _buildDetailItem('Produktivitas', commodityData['productivity']),
-              _buildDetailItem('Metode Budidaya', commodityData['cultivation_method']),
-              _buildDetailItem('Hama Umum', 
-                  (commodityData['common_pests'] as List?)?.join(', ') ?? '-'),
+              _buildDetailItem(
+                'Metode Budidaya',
+                commodityData['cultivation_method'],
+              ),
+              _buildDetailItem(
+                'Hama Umum',
+                (commodityData['common_pests'] as List?)?.join(', ') ?? '-',
+              ),
             ]),
 
             _buildSectionTitle('Data Lahan/Kebun'),
             _buildDetailCard([
               _buildDetailItem('Luas Lahan', commodityData['land_area']),
               _buildDetailItem('Jenis Tanah', commodityData['soil_type']),
-              _buildDetailItem('pH Tanah', commodityData['soil_ph']?.toString()),
-              _buildDetailItem('Kandungan N', 
-                  commodityData['nutrient_content']?['N'] ?? '-'),
-              _buildDetailItem('Kandungan P', 
-                  commodityData['nutrient_content']?['P'] ?? '-'),
-              _buildDetailItem('Kandungan K', 
-                  commodityData['nutrient_content']?['K'] ?? '-'),
-              _buildDetailItem('Ketersediaan Air', commodityData['water_availability']),
+              _buildDetailItem(
+                'pH Tanah',
+                commodityData['soil_ph']?.toString(),
+              ),
+              _buildDetailItem(
+                'Kandungan N',
+                commodityData['nutrient_content']?['N'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kandungan P',
+                commodityData['nutrient_content']?['P'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kandungan K',
+                commodityData['nutrient_content']?['K'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Ketersediaan Air',
+                commodityData['water_availability'],
+              ),
               _buildDetailItem('Ketinggian', commodityData['elevation']),
-              _buildDetailItem('Koordinat GPS', commodityData['gps_coordinates']),
+              _buildDetailItem(
+                'Koordinat GPS',
+                commodityData['gps_coordinates'],
+              ),
             ]),
 
             _buildSectionTitle('Data Cuaca & Iklim'),
             _buildDetailCard([
-              _buildDetailItem('Suhu Min-Max', 
-                  '${commodityData['weather_data']?['temperature']?['min']}°C - '
-                  '${commodityData['weather_data']?['temperature']?['max']}°C'),
-              _buildDetailItem('Curah Hujan', 
-                  commodityData['weather_data']?['rainfall'] ?? '-'),
-              _buildDetailItem('Kelembapan', 
-                  commodityData['weather_data']?['humidity'] ?? '-'),
-              _buildDetailItem('Sinar Matahari', 
-                  commodityData['weather_data']?['sunlight'] ?? '-'),
-              _buildDetailItem('Kecepatan Angin', 
-                  commodityData['weather_data']?['wind_speed'] ?? '-'),
+              _buildDetailItem(
+                'Suhu Min-Max',
+                '${commodityData['weather_data']?['temperature']?['min']}°C - '
+                    '${commodityData['weather_data']?['temperature']?['max']}°C',
+              ),
+              _buildDetailItem(
+                'Curah Hujan',
+                commodityData['weather_data']?['rainfall'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kelembapan',
+                commodityData['weather_data']?['humidity'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Sinar Matahari',
+                commodityData['weather_data']?['sunlight'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kecepatan Angin',
+                commodityData['weather_data']?['wind_speed'] ?? '-',
+              ),
             ]),
 
             _buildSectionTitle('Data Hama & Penyakit'),
@@ -425,61 +472,105 @@ class CommodityDetailScreen extends StatelessWidget {
 
             _buildSectionTitle('Pemupukan & Penyiraman'),
             _buildDetailCard([
-              _buildDetailItem('Frekuensi Penyiraman', 
-                  commodityData['watering']?['frequency'] ?? '-'),
-              _buildDetailItem('Volume Air', 
-                  commodityData['watering']?['volume'] ?? '-'),
+              _buildDetailItem(
+                'Frekuensi Penyiraman',
+                commodityData['watering']?['frequency'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Volume Air',
+                commodityData['watering']?['volume'] ?? '-',
+              ),
               ...?_buildFertilizationData(commodityData['fertilization']),
             ]),
 
             _buildSectionTitle('Data Produksi'),
             _buildDetailCard([
-              _buildDetailItem('Hasil Panen', 
-                  commodityData['production']?['yield'] ?? '-'),
-              _buildDetailItem('Biaya Produksi', 
-                  commodityData['production']?['production_cost'] ?? '-'),
-              _buildDetailItem('Harga Jual', 
-                  commodityData['production']?['selling_price'] ?? '-'),
-              _buildDetailItem('Keuntungan', 
-                  commodityData['production']?['profit'] ?? '-'),
-              _buildDetailItem('Waktu Panen', 
-                  commodityData['production']?['harvest_time'] ?? '-'),
-              _buildDetailItem('Kualitas', 
-                  commodityData['production']?['quality'] ?? '-'),
+              _buildDetailItem(
+                'Hasil Panen',
+                commodityData['production']?['yield'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Biaya Produksi',
+                commodityData['production']?['production_cost'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Harga Jual',
+                commodityData['production']?['selling_price'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Keuntungan',
+                commodityData['production']?['profit'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Waktu Panen',
+                commodityData['production']?['harvest_time'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kualitas',
+                commodityData['production']?['quality'] ?? '-',
+              ),
             ]),
 
             _buildSectionTitle('Data Pasar'),
             _buildDetailCard([
-              _buildDetailItem('Harga Harian', 
-                  commodityData['market_data']?['daily_price'] ?? '-'),
-              _buildDetailItem('Permintaan', 
-                  commodityData['market_data']?['demand'] ?? '-'),
-              _buildDetailItem('Penawaran', 
-                  commodityData['market_data']?['supply'] ?? '-'),
-              _buildDetailItem('Rantai Distribusi', 
-                  commodityData['market_data']?['distribution_chain'] ?? '-'),
-              _buildDetailItem('Pasar Terdekat', 
-                  commodityData['market_data']?['nearest_market'] ?? '-'),
-              _buildDetailItem('Sedang Tren', 
-                  (commodityData['market_data']?['trending'] ?? false) ? 'Ya' : 'Tidak'),
+              _buildDetailItem(
+                'Harga Harian',
+                commodityData['market_data']?['daily_price'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Permintaan',
+                commodityData['market_data']?['demand'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Penawaran',
+                commodityData['market_data']?['supply'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Rantai Distribusi',
+                commodityData['market_data']?['distribution_chain'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Pasar Terdekat',
+                commodityData['market_data']?['nearest_market'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Sedang Tren',
+                (commodityData['market_data']?['trending'] ?? false)
+                    ? 'Ya'
+                    : 'Tidak',
+              ),
             ]),
 
             _buildSectionTitle('Data Petani'),
             _buildDetailCard([
-              _buildDetailItem('Nama Petani', 
-                  commodityData['farmer_data']?['name'] ?? '-'),
-              _buildDetailItem('Umur', 
-                  commodityData['farmer_data']?['age']?.toString() ?? '-'),
-              _buildDetailItem('Jenis Kelamin', 
-                  commodityData['farmer_data']?['gender'] ?? '-'),
-              _buildDetailItem('Kelompok Tani', 
-                  commodityData['farmer_data']?['farmer_group'] ?? '-'),
-              _buildDetailItem('Pengalaman', 
-                  commodityData['farmer_data']?['experience'] ?? '-'),
-              _buildDetailItem('Kontak', 
-                  commodityData['farmer_data']?['contact'] ?? '-'),
-              _buildDetailItem('Alamat', 
-                  commodityData['farmer_data']?['address'] ?? '-'),
+              _buildDetailItem(
+                'Nama Petani',
+                commodityData['farmer_data']?['name'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Umur',
+                commodityData['farmer_data']?['age']?.toString() ?? '-',
+              ),
+              _buildDetailItem(
+                'Jenis Kelamin',
+                commodityData['farmer_data']?['gender'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kelompok Tani',
+                commodityData['farmer_data']?['farmer_group'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Pengalaman',
+                commodityData['farmer_data']?['experience'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Kontak',
+                commodityData['farmer_data']?['contact'] ?? '-',
+              ),
+              _buildDetailItem(
+                'Alamat',
+                commodityData['farmer_data']?['address'] ?? '-',
+              ),
             ]),
           ],
         ),
@@ -491,18 +582,19 @@ class CommodityDetailScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => CommodityEditScreen(
-          commodityData: commodityData,
-          categories: const [],
-          plantingSeasons: const [],
-          cultivationMethods: const [],
-          soilTypes: const [],
-          waterAvailability: const [],
-          marketDemand: const [],
-          marketSupply: const [],
-          qualityLevels: const [],
-          onSave: onEdit,
-        ),
+        builder:
+            (context) => CommodityEditScreen(
+              commodityData: commodityData,
+              categories: const [],
+              plantingSeasons: const [],
+              cultivationMethods: const [],
+              soilTypes: const [],
+              waterAvailability: const [],
+              marketDemand: const [],
+              marketSupply: const [],
+              qualityLevels: const [],
+              onSave: onEdit,
+            ),
       ),
     );
   }
@@ -549,10 +641,7 @@ class CommodityDetailScreen extends StatelessWidget {
             ),
           ),
           const Text(': ', style: TextStyle(fontWeight: FontWeight.w500)),
-          Expanded(
-            flex: 3,
-            child: Text(value ?? '-'),
-          ),
+          Expanded(flex: 3, child: Text(value ?? '-')),
         ],
       ),
     );
@@ -562,9 +651,11 @@ class CommodityDetailScreen extends StatelessWidget {
     if (pestData == null || pestData.isEmpty) {
       return [
         _buildDetailCard([
-          const Text('Tidak ada data hama/penyakit', 
-              style: TextStyle(color: Colors.grey)),
-        ])
+          const Text(
+            'Tidak ada data hama/penyakit',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ]),
       ];
     }
 
@@ -583,9 +674,11 @@ class CommodityDetailScreen extends StatelessWidget {
       return [
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 6),
-          child: Text('Tidak ada data pemupukan', 
-              style: TextStyle(color: Colors.grey)),
-        )
+          child: Text(
+            'Tidak ada data pemupukan',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ),
       ];
     }
 
@@ -638,67 +731,85 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
   @override
   void initState() {
     super.initState();
-    _formData = widget.commodityData != null 
-        ? Map<String, dynamic>.from(widget.commodityData!)
-        : {
-            "commodity": "",
-            "price": 0,
-            "location": "",
-            "category": widget.categories.isNotEmpty ? widget.categories[0] : "",
-            "plant_type": "",
-            "variety": "",
-            "planting_season": widget.plantingSeasons.isNotEmpty ? widget.plantingSeasons[0] : "",
-            "planting_date": "",
-            "harvest_date": "",
-            "productivity": "",
-            "common_pests": [],
-            "cultivation_method": widget.cultivationMethods.isNotEmpty ? widget.cultivationMethods[0] : "",
-            "land_area": "",
-            "soil_type": widget.soilTypes.isNotEmpty ? widget.soilTypes[0] : "",
-            "soil_ph": 6.0,
-            "nutrient_content": {"N": "sedang", "P": "sedang", "K": "sedang"},
-            "water_availability": widget.waterAvailability.isNotEmpty ? widget.waterAvailability[0] : "",
-            "elevation": "",
-            "gps_coordinates": "",
-            "weather_data": {
-              "temperature": {"min": 0, "max": 0},
-              "rainfall": "",
-              "humidity": "",
-              "sunlight": "",
-              "wind_speed": ""
-            },
-            "pest_data": [],
-            "fertilization": [],
-            "watering": {
-              "frequency": "",
-              "volume": ""
-            },
-            "production": {
-              "yield": "",
-              "production_cost": "",
-              "selling_price": "",
-              "profit": "",
-              "harvest_time": "",
-              "quality": widget.qualityLevels.isNotEmpty ? widget.qualityLevels[0] : ""
-            },
-            "market_data": {
-              "daily_price": "",
-              "demand": widget.marketDemand.isNotEmpty ? widget.marketDemand[0] : "",
-              "supply": widget.marketSupply.isNotEmpty ? widget.marketSupply[0] : "",
-              "distribution_chain": "",
-              "nearest_market": "",
-              "trending": false
-            },
-            "farmer_data": {
-              "name": "",
-              "age": 0,
-              "gender": "Laki-laki",
-              "farmer_group": "",
-              "experience": "",
-              "contact": "",
-              "address": ""
-            }
-          };
+    _formData =
+        widget.commodityData != null
+            ? Map<String, dynamic>.from(widget.commodityData!)
+            : {
+              "commodity": "",
+              "price": 0,
+              "location": "",
+              "category":
+                  widget.categories.isNotEmpty ? widget.categories[0] : "",
+              "plant_type": "",
+              "variety": "",
+              "planting_season":
+                  widget.plantingSeasons.isNotEmpty
+                      ? widget.plantingSeasons[0]
+                      : "",
+              "planting_date": "",
+              "harvest_date": "",
+              "productivity": "",
+              "common_pests": [],
+              "cultivation_method":
+                  widget.cultivationMethods.isNotEmpty
+                      ? widget.cultivationMethods[0]
+                      : "",
+              "land_area": "",
+              "soil_type":
+                  widget.soilTypes.isNotEmpty ? widget.soilTypes[0] : "",
+              "soil_ph": 6.0,
+              "nutrient_content": {"N": "sedang", "P": "sedang", "K": "sedang"},
+              "water_availability":
+                  widget.waterAvailability.isNotEmpty
+                      ? widget.waterAvailability[0]
+                      : "",
+              "elevation": "",
+              "gps_coordinates": "",
+              "weather_data": {
+                "temperature": {"min": 0, "max": 0},
+                "rainfall": "",
+                "humidity": "",
+                "sunlight": "",
+                "wind_speed": "",
+              },
+              "pest_data": [],
+              "fertilization": [],
+              "watering": {"frequency": "", "volume": ""},
+              "production": {
+                "yield": "",
+                "production_cost": "",
+                "selling_price": "",
+                "profit": "",
+                "harvest_time": "",
+                "quality":
+                    widget.qualityLevels.isNotEmpty
+                        ? widget.qualityLevels[0]
+                        : "",
+              },
+              "market_data": {
+                "daily_price": "",
+                "demand":
+                    widget.marketDemand.isNotEmpty
+                        ? widget.marketDemand[0]
+                        : "",
+                "supply":
+                    widget.marketSupply.isNotEmpty
+                        ? widget.marketSupply[0]
+                        : "",
+                "distribution_chain": "",
+                "nearest_market": "",
+                "trending": false,
+              },
+              "farmer_data": {
+                "name": "",
+                "age": 0,
+                "gender": "Laki-laki",
+                "farmer_group": "",
+                "experience": "",
+                "contact": "",
+                "address": "",
+              },
+            };
   }
 
   void _saveForm() {
@@ -726,7 +837,9 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
               children: [
                 TextFormField(
                   controller: pestNameController,
-                  decoration: const InputDecoration(labelText: 'Nama Hama/Penyakit'),
+                  decoration: const InputDecoration(
+                    labelText: 'Nama Hama/Penyakit',
+                  ),
                   validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
                 ),
                 TextFormField(
@@ -735,11 +848,15 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
                 ),
                 TextFormField(
                   controller: controlMethodController,
-                  decoration: const InputDecoration(labelText: 'Metode Pengendalian'),
+                  decoration: const InputDecoration(
+                    labelText: 'Metode Pengendalian',
+                  ),
                 ),
                 TextFormField(
                   controller: attackHistoryController,
-                  decoration: const InputDecoration(labelText: 'Riwayat Serangan'),
+                  decoration: const InputDecoration(
+                    labelText: 'Riwayat Serangan',
+                  ),
                 ),
               ],
             ),
@@ -776,58 +893,69 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
     final pest = _formData['pest_data'][index];
     final pestNameController = TextEditingController(text: pest['pest_name']);
     final symptomsController = TextEditingController(text: pest['symptoms']);
-    final controlMethodController = TextEditingController(text: pest['control_method']);
-    final attackHistoryController = TextEditingController(text: pest['attack_history']);
+    final controlMethodController = TextEditingController(
+      text: pest['control_method'],
+    );
+    final attackHistoryController = TextEditingController(
+      text: pest['attack_history'],
+    );
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit Data Hama/Penyakit'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: pestNameController,
-                decoration: const InputDecoration(labelText: 'Nama Hama/Penyakit'),
-                validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Edit Data Hama/Penyakit'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: pestNameController,
+                    decoration: const InputDecoration(
+                      labelText: 'Nama Hama/Penyakit',
+                    ),
+                    validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
+                  ),
+                  TextFormField(
+                    controller: symptomsController,
+                    decoration: const InputDecoration(labelText: 'Gejala'),
+                  ),
+                  TextFormField(
+                    controller: controlMethodController,
+                    decoration: const InputDecoration(
+                      labelText: 'Metode Pengendalian',
+                    ),
+                  ),
+                  TextFormField(
+                    controller: attackHistoryController,
+                    decoration: const InputDecoration(
+                      labelText: 'Riwayat Serangan',
+                    ),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: symptomsController,
-                decoration: const InputDecoration(labelText: 'Gejala'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal'),
               ),
-              TextFormField(
-                controller: controlMethodController,
-                decoration: const InputDecoration(labelText: 'Metode Pengendalian'),
-              ),
-              TextFormField(
-                controller: attackHistoryController,
-                decoration: const InputDecoration(labelText: 'Riwayat Serangan'),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _formData['pest_data'][index] = {
+                      "pest_name": pestNameController.text,
+                      "symptoms": symptomsController.text,
+                      "control_method": controlMethodController.text,
+                      "attack_history": attackHistoryController.text,
+                    };
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Simpan'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _formData['pest_data'][index] = {
-                  "pest_name": pestNameController.text,
-                  "symptoms": symptomsController.text,
-                  "control_method": controlMethodController.text,
-                  "attack_history": attackHistoryController.text,
-                };
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -902,48 +1030,49 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Edit Data Pemupukan'),
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormField(
-                controller: typeController,
-                decoration: const InputDecoration(labelText: 'Jenis Pupuk'),
-                validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Edit Data Pemupukan'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextFormField(
+                    controller: typeController,
+                    decoration: const InputDecoration(labelText: 'Jenis Pupuk'),
+                    validator: (value) => value!.isEmpty ? 'Wajib diisi' : null,
+                  ),
+                  TextFormField(
+                    controller: dosageController,
+                    decoration: const InputDecoration(labelText: 'Dosis'),
+                  ),
+                  TextFormField(
+                    controller: scheduleController,
+                    decoration: const InputDecoration(labelText: 'Jadwal'),
+                  ),
+                ],
               ),
-              TextFormField(
-                controller: dosageController,
-                decoration: const InputDecoration(labelText: 'Dosis'),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Batal'),
               ),
-              TextFormField(
-                controller: scheduleController,
-                decoration: const InputDecoration(labelText: 'Jadwal'),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _formData['fertilization'][index] = {
+                      "fertilizer_type": typeController.text,
+                      "dosage": dosageController.text,
+                      "schedule": scheduleController.text,
+                    };
+                  });
+                  Navigator.pop(context);
+                },
+                child: const Text('Simpan'),
               ),
             ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              setState(() {
-                _formData['fertilization'][index] = {
-                  "fertilizer_type": typeController.text,
-                  "dosage": dosageController.text,
-                  "schedule": scheduleController.text,
-                };
-              });
-              Navigator.pop(context);
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
-      ),
     );
   }
 
@@ -957,14 +1086,11 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.commodityData == null 
-            ? 'Tambah Komoditas' 
-            : 'Edit Komoditas'),
+        title: Text(
+          widget.commodityData == null ? 'Tambah Komoditas' : 'Edit Komoditas',
+        ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.save),
-            onPressed: _saveForm,
-          ),
+          IconButton(icon: const Icon(Icons.save), onPressed: _saveForm),
         ],
       ),
       body: Form(
@@ -985,12 +1111,20 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
               _buildTextField('Jenis Tanaman', 'plant_type'),
               _buildTextField('Varietas', 'variety'),
               if (widget.plantingSeasons.isNotEmpty)
-                _buildDropdown('Musim Tanam', 'planting_season', widget.plantingSeasons),
+                _buildDropdown(
+                  'Musim Tanam',
+                  'planting_season',
+                  widget.plantingSeasons,
+                ),
               _buildTextField('Tanggal Tanam', 'planting_date'),
               _buildTextField('Tanggal Panen', 'harvest_date'),
               _buildTextField('Produktivitas', 'productivity'),
               if (widget.cultivationMethods.isNotEmpty)
-                _buildDropdown('Metode Budidaya', 'cultivation_method', widget.cultivationMethods),
+                _buildDropdown(
+                  'Metode Budidaya',
+                  'cultivation_method',
+                  widget.cultivationMethods,
+                ),
               _buildMultiSelectField('Hama Umum', 'common_pests'),
 
               _buildSectionTitle('Data Lahan/Kebun'),
@@ -998,17 +1132,36 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
               if (widget.soilTypes.isNotEmpty)
                 _buildDropdown('Jenis Tanah', 'soil_type', widget.soilTypes),
               _buildNumberField('pH Tanah', 'soil_ph'),
-              _buildDropdown('Kandungan N', 'nutrient_content.N', ['rendah', 'sedang', 'tinggi']),
-              _buildDropdown('Kandungan P', 'nutrient_content.P', ['rendah', 'sedang', 'tinggi']),
-              _buildDropdown('Kandungan K', 'nutrient_content.K', ['rendah', 'sedang', 'tinggi']),
+              _buildDropdown('Kandungan N', 'nutrient_content.N', [
+                'rendah',
+                'sedang',
+                'tinggi',
+              ]),
+              _buildDropdown('Kandungan P', 'nutrient_content.P', [
+                'rendah',
+                'sedang',
+                'tinggi',
+              ]),
+              _buildDropdown('Kandungan K', 'nutrient_content.K', [
+                'rendah',
+                'sedang',
+                'tinggi',
+              ]),
               if (widget.waterAvailability.isNotEmpty)
-                _buildDropdown('Ketersediaan Air', 'water_availability', widget.waterAvailability),
+                _buildDropdown(
+                  'Ketersediaan Air',
+                  'water_availability',
+                  widget.waterAvailability,
+                ),
               _buildTextField('Ketinggian', 'elevation'),
               _buildTextField('Koordinat GPS', 'gps_coordinates'),
 
               _buildSectionTitle('Data Cuaca & Iklim'),
               _buildNumberField('Suhu Minimum', 'weather_data.temperature.min'),
-              _buildNumberField('Suhu Maksimum', 'weather_data.temperature.max'),
+              _buildNumberField(
+                'Suhu Maksimum',
+                'weather_data.temperature.max',
+              ),
               _buildTextField('Curah Hujan', 'weather_data.rainfall'),
               _buildTextField('Kelembapan', 'weather_data.humidity'),
               _buildTextField('Sinar Matahari', 'weather_data.sunlight'),
@@ -1037,15 +1190,30 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
               _buildTextField('Keuntungan', 'production.profit'),
               _buildTextField('Waktu Panen', 'production.harvest_time'),
               if (widget.qualityLevels.isNotEmpty)
-                _buildDropdown('Kualitas', 'production.quality', widget.qualityLevels),
+                _buildDropdown(
+                  'Kualitas',
+                  'production.quality',
+                  widget.qualityLevels,
+                ),
 
               _buildSectionTitle('Data Pasar'),
               _buildTextField('Harga Harian', 'market_data.daily_price'),
               if (widget.marketDemand.isNotEmpty)
-                _buildDropdown('Permintaan', 'market_data.demand', widget.marketDemand),
+                _buildDropdown(
+                  'Permintaan',
+                  'market_data.demand',
+                  widget.marketDemand,
+                ),
               if (widget.marketSupply.isNotEmpty)
-                _buildDropdown('Penawaran', 'market_data.supply', widget.marketSupply),
-              _buildTextField('Rantai Distribusi', 'market_data.distribution_chain'),
+                _buildDropdown(
+                  'Penawaran',
+                  'market_data.supply',
+                  widget.marketSupply,
+                ),
+              _buildTextField(
+                'Rantai Distribusi',
+                'market_data.distribution_chain',
+              ),
               _buildTextField('Pasar Terdekat', 'market_data.nearest_market'),
               SwitchListTile(
                 title: const Text('Sedang Tren'),
@@ -1060,7 +1228,10 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
               _buildSectionTitle('Data Petani'),
               _buildTextField('Nama Petani', 'farmer_data.name'),
               _buildNumberField('Umur', 'farmer_data.age'),
-              _buildDropdown('Jenis Kelamin', 'farmer_data.gender', ['Laki-laki', 'Perempuan']),
+              _buildDropdown('Jenis Kelamin', 'farmer_data.gender', [
+                'Laki-laki',
+                'Perempuan',
+              ]),
               _buildTextField('Kelompok Tani', 'farmer_data.farmer_group'),
               _buildTextField('Pengalaman', 'farmer_data.experience'),
               _buildTextField('Kontak', 'farmer_data.contact'),
@@ -1071,9 +1242,15 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
                 child: ElevatedButton(
                   onPressed: _saveForm,
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 40,
+                      vertical: 16,
+                    ),
                   ),
-                  child: const Text('Simpan Data', style: TextStyle(fontSize: 18)),
+                  child: const Text(
+                    'Simpan Data',
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
               ),
             ],
@@ -1169,7 +1346,7 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
             }
             data = data[pathParts[i]];
           }
-          
+
           if (value != null && value.isNotEmpty) {
             if (value.contains('.')) {
               data[pathParts.last] = double.parse(value);
@@ -1205,12 +1382,10 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
           labelText: label,
           border: const OutlineInputBorder(),
         ),
-        items: items.map((String value) {
-          return DropdownMenuItem<String>(
-            value: value,
-            child: Text(value),
-          );
-        }).toList(),
+        items:
+            items.map((String value) {
+              return DropdownMenuItem<String>(value: value, child: Text(value));
+            }).toList(),
         onChanged: (newValue) {
           setState(() {
             dynamic data = _formData;
@@ -1257,16 +1432,17 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
-            children: currentItems.map((item) {
-              return Chip(
-                label: Text(item),
-                onDeleted: () {
-                  setState(() {
-                    currentData[fieldName].remove(item);
-                  });
-                },
-              );
-            }).toList(),
+            children:
+                currentItems.map((item) {
+                  return Chip(
+                    label: Text(item),
+                    onDeleted: () {
+                      setState(() {
+                        currentData[fieldName].remove(item);
+                      });
+                    },
+                  );
+                }).toList(),
           ),
           TextButton(
             onPressed: () async {
@@ -1278,9 +1454,7 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
                     title: const Text('Tambah Item'),
                     content: TextField(
                       controller: controller,
-                      decoration: const InputDecoration(
-                        labelText: 'Item Baru',
-                      ),
+                      decoration: const InputDecoration(labelText: 'Item Baru'),
                     ),
                     actions: [
                       TextButton(
@@ -1299,7 +1473,7 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
                   );
                 },
               );
-              
+
               if (newItem != null && newItem.isNotEmpty) {
                 setState(() {
                   currentData[fieldName].add(newItem);
@@ -1322,14 +1496,14 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
             'Tidak ada data hama/penyakit',
             style: TextStyle(color: Colors.grey),
           ),
-        )
+        ),
       ];
     }
 
     return _formData['pest_data'].asMap().entries.map((entry) {
       final index = entry.key;
       final pest = entry.value;
-      
+
       return Card(
         margin: const EdgeInsets.symmetric(vertical: 4),
         child: ListTile(
@@ -1354,7 +1528,8 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
   }
 
   List<Widget> _buildFertilizationList() {
-    if (_formData['fertilization'] == null || _formData['fertilization'].isEmpty) {
+    if (_formData['fertilization'] == null ||
+        _formData['fertilization'].isEmpty) {
       return [
         const Padding(
           padding: EdgeInsets.symmetric(vertical: 8),
@@ -1362,14 +1537,14 @@ class _CommodityEditScreenState extends State<CommodityEditScreen> {
             'Tidak ada data pemupukan',
             style: TextStyle(color: Colors.grey),
           ),
-        )
+        ),
       ];
     }
 
     return _formData['fertilization'].asMap().entries.map((entry) {
       final index = entry.key;
       final fert = entry.value;
-      
+
       return Card(
         margin: const EdgeInsets.symmetric(vertical: 4),
         child: ListTile(
