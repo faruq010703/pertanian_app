@@ -9,7 +9,7 @@
 # packages, and plugins designed to encourage good coding practices.
 analyzer:
   errors:
-    no_leading_underscores_for_local_identifiers: ignore ignore
+    no_leading_underscores_for_local_identifiers: ignore 
     prefer_typing_uninitialized_variables: ignore
     sort_child_properties_last: ignore
 include: package:flutter_lints/flutter.yaml
