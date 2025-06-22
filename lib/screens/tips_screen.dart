@@ -56,15 +56,7 @@ class _TipsScreenState extends State<TipsScreen> {
       appBar: AppBar(
         title: const Text('Tips Pertanian'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              showSearch(
-                context: context,
-                delegate: TipsSearchDelegate(),
-              );
-            },
-          ),
+          // Icon pencarian dihapus
           IconButton(
             icon: const Icon(Icons.favorite),
             onPressed: () {
@@ -233,10 +225,10 @@ class _TipsScreenState extends State<TipsScreen> {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: tip['color'].withOpacity(0.2),
+                color: (tip['color'] ?? Colors.green).withOpacity(0.2),
                 shape: BoxShape.circle,
               ),
-              child: Icon(tip['icon'], color: tip['color']),
+              child: Icon(tip['icon'] ?? Icons.help_outline, color: tip['color'] ?? Colors.green),
             ),
             const SizedBox(width: 12),
             Expanded(
@@ -244,7 +236,7 @@ class _TipsScreenState extends State<TipsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    tip['title'],
+                    tip['title'] ?? 'No Title',
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
@@ -252,7 +244,7 @@ class _TipsScreenState extends State<TipsScreen> {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    tip['description'],
+                    tip['description'] ?? 'No description available',
                     style: TextStyle(
                       color: Colors.grey[700],
                     ),
@@ -284,10 +276,10 @@ class _TipsScreenState extends State<TipsScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => DiseaseDetailScreen(
-                title: disease['title'],
-                icon: disease['icon'],
-                color: disease['color'],
-                details: disease['details'],
+                title: disease['title'] ?? 'Unknown Disease',
+                icon: disease['icon'] ?? Icons.warning,
+                color: disease['color'] ?? Colors.red,
+                details: disease['details'] ?? ['No details available'],
                 onAddFavorite: () => onAddFavorite(disease),
               ),
             ),
@@ -303,15 +295,16 @@ class _TipsScreenState extends State<TipsScreen> {
                   Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: disease['color'].withOpacity(0.2),
+                      color: (disease['color'] ?? Colors.red).withOpacity(0.2),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(disease['icon'], color: disease['color'], size: 24),
+                    child: Icon(disease['icon'] ?? Icons.warning, 
+                            color: disease['color'] ?? Colors.red, size: 24),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      disease['title'],
+                      disease['title'] ?? 'Unknown Disease',
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -330,12 +323,16 @@ class _TipsScreenState extends State<TipsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    disease['details'][0],
+                    (disease['details'] != null && disease['details'].isNotEmpty) 
+                        ? disease['details'][0] 
+                        : 'No details available',
                     style: const TextStyle(fontSize: 14),
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    disease['details'][1],
+                    (disease['details'] != null && disease['details'].length > 1)
+                        ? disease['details'][1]
+                        : 'No details available',
                     style: const TextStyle(fontSize: 14),
                   ),
                 ],
@@ -369,12 +366,12 @@ class _TipsScreenState extends State<TipsScreen> {
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
       child: ListTile(
-        leading: Icon(tip['icon'], color: Colors.green),
+        leading: Icon(tip['icon'] ?? Icons.help_outline, color: Colors.green),
         title: Text(
-          tip['title'],
+          tip['title'] ?? 'No Title',
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(tip['description']),
+        subtitle: Text(tip['description'] ?? 'No description available'),
         trailing: IconButton(
           icon: const Icon(Icons.favorite_border),
           onPressed: () => onAddFavorite(tip),
@@ -384,8 +381,8 @@ class _TipsScreenState extends State<TipsScreen> {
             context,
             MaterialPageRoute(
               builder: (context) => TipDetailScreen(
-                title: tip['title'],
-                description: tip['description'],
+                title: tip['title'] ?? 'No Title',
+                description: tip['description'] ?? 'No description available',
                 onAddFavorite: () => onAddFavorite(tip),
               ),
             ),
@@ -447,10 +444,10 @@ class DiseaseDetailScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Disease details
-            _buildDetailSection('Gejala', details[0].replaceFirst('Gejala: ', '')),
-            _buildDetailSection('Penyebab', details[1].replaceFirst('Penyebab: ', '')),
-            _buildDetailSection('Solusi', details[2].replaceFirst('Solusi: ', '')),
-            _buildDetailSection('Pencegahan', details[3].replaceFirst('Pencegahan: ', '')),
+            _buildDetailSection('Gejala', details.isNotEmpty ? details[0].replaceFirst('Gejala: ', '') : 'No symptoms info'),
+            _buildDetailSection('Penyebab', details.length > 1 ? details[1].replaceFirst('Penyebab: ', '') : 'No cause info'),
+            _buildDetailSection('Solusi', details.length > 2 ? details[2].replaceFirst('Solusi: ', '') : 'No solution info'),
+            _buildDetailSection('Pencegahan', details.length > 3 ? details[3].replaceFirst('Pencegahan: ', '') : 'No prevention info'),
 
             const SizedBox(height: 24),
             _buildTreatmentSteps(),
@@ -594,171 +591,6 @@ class TipDetailScreen extends StatelessWidget {
   }
 }
 
-class TipsSearchDelegate extends SearchDelegate {
-  final List<Map<String, dynamic>> allTips = [
-    {
-      'title': 'Penyiraman yang Tepat',
-      'icon': Icons.water_drop,
-      'color': Colors.blue,
-      'description': 'Siram tanaman di pagi atau sore hari. Hindari menyiram daun secara langsung untuk mencegah jamur.',
-      'type': 'tip',
-    },
-    {
-      'title': 'Pemupukan Berkala',
-      'icon': Icons.grass,
-      'color': Colors.green,
-      'description': 'Gunakan pupuk organik setiap 2 minggu. Untuk tanaman buah, gunakan pupuk tinggi fosfor saat berbunga.',
-      'type': 'tip',
-    },
-    {
-      'title': 'Pencahayaan Optimal',
-      'icon': Icons.light_mode,
-      'color': Colors.amber,
-      'description': 'Kenali kebutuhan cahaya tanaman. Tanaman hias umumnya butuh cahaya tidak langsung, sementara sayuran butuh sinar matahari penuh.',
-      'type': 'tip',
-    },
-    {
-      'title': 'Daun Menguning',
-      'icon': Icons.warning,
-      'color': Colors.amber,
-      'details': [
-        'Gejala: Daun menguning, pertumbuhan terhambat',
-        'Penyebab: Kekurangan nitrogen, overwatering, atau jamur',
-        'Solusi: Periksa kelembaban tanah, beri pupuk nitrogen',
-        'Pencegahan: Jaga drainase tanah, rotasi tanaman'
-      ],
-      'type': 'disease',
-    },
-    {
-      'title': 'Bercak Hitam pada Daun',
-      'icon': Icons.bug_report,
-      'color': Colors.red,
-      'details': [
-        'Gejala: Bercak hitam/coklat dengan pinggiran kuning',
-        'Penyebab: Jamur antraknosa atau bakteri',
-        'Solusi: Potong daun terinfeksi, semprot fungisida alami',
-        'Pencegahan: Hindari penyiraman dari atas, jaga sirkulasi udara'
-      ],
-      'type': 'disease',
-    },
-    {
-      'title': 'Tanaman Layu',
-      'icon': Icons.sick,
-      'color': Colors.brown,
-      'details': [
-        'Gejala: Tanaman layu meski tanah cukup air',
-        'Penyebab: Akar busuk atau penyakit layu fusarium',
-        'Solusi: Periksa akar, ganti media tanam jika busuk',
-        'Pencegahan: Gunakan media tanam steril, jangan overwatering'
-      ],
-      'type': 'disease',
-    },
-    {
-      'title': 'Rotasi Tanaman',
-      'icon': Icons.autorenew,
-      'description': 'Berganti jenis tanaman setiap musim untuk menjaga kesuburan tanah dan mengurangi hama.',
-      'type': 'land',
-    },
-    {
-      'title': 'Pengolahan Tanah',
-      'icon': Icons.agriculture,
-      'description': 'Gemburkan tanah sebelum menanam dan tambahkan kompos untuk meningkatkan aerasi dan nutrisi.',
-      'type': 'land',
-    },
-    {
-      'title': 'Pengendalian Gulma',
-      'icon': Icons.forest,
-      'description': 'Cabut gulma secara rutin atau gunakan mulsa organik untuk menekan pertumbuhannya.',
-      'type': 'land',
-    },
-  ];
-
-  @override
-  List<Widget> buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: const Icon(Icons.clear),
-        onPressed: () {
-          query = '';
-        },
-      ),
-    ];
-  }
-
-  @override
-  Widget buildLeading(BuildContext context) {
-    return IconButton(
-      icon: const Icon(Icons.arrow_back),
-      onPressed: () {
-        close(context, null);
-      },
-    );
-  }
-
-  @override
-  Widget buildResults(BuildContext context) {
-    return _buildSearchResults();
-  }
-
-  @override
-  Widget buildSuggestions(BuildContext context) {
-    return _buildSearchResults();
-  }
-
-  Widget _buildSearchResults() {
-    final List<Map<String, dynamic>> searchResults = query.isEmpty
-        ? []
-        : allTips.where((tip) {
-            return tip['title'].toLowerCase().contains(query.toLowerCase()) ||
-                (tip['description'] != null && tip['description'].toLowerCase().contains(query.toLowerCase())) ||
-                (tip['details'] != null && tip['details'].any((detail) => detail.toLowerCase().contains(query.toLowerCase())));
-          }).toList();
-
-    return ListView.builder(
-      itemCount: searchResults.length,
-      itemBuilder: (context, index) {
-        final tip = searchResults[index];
-        return ListTile(
-          leading: Icon(tip['icon'], color: tip['color']),
-          title: Text(tip['title']),
-          subtitle: tip['description'] != null
-              ? Text(tip['description'])
-              : tip['details'] != null
-                  ? Text(tip['details'][0])
-                  : null,
-          onTap: () {
-            if (tip['type'] == 'disease') {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DiseaseDetailScreen(
-                    title: tip['title'],
-                    icon: tip['icon'],
-                    color: tip['color'],
-                    details: tip['details'],
-                    onAddFavorite: () {}, // Empty callback for search results
-                  ),
-                ),
-              );
-            } else {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TipDetailScreen(
-                    title: tip['title'],
-                    description: tip['description'] ?? tip['details'].join('\n'),
-                    onAddFavorite: () {}, // Empty callback for search results
-                  ),
-                ),
-              );
-            }
-          },
-        );
-      },
-    );
-  }
-}
-
 class FavoritesScreen extends StatelessWidget {
   final List<Map<String, dynamic>> favoriteTips;
   final Function(String) onRemove;
@@ -784,16 +616,20 @@ class FavoritesScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final tip = favoriteTips[index];
                 return ListTile(
-                  leading: Icon(tip['icon'], color: tip['color']),
-                  title: Text(tip['title']),
-                  subtitle: tip['description'] != null
-                      ? Text(tip['description'])
-                      : tip['details'] != null
-                          ? Text(tip['details'][0])
-                          : null,
+                  leading: Icon(
+                    tip['icon'] ?? Icons.help_outline,
+                    color: tip['color'] ?? Colors.green,
+                  ),
+                  title: Text(tip['title'] ?? 'No Title'),
+                  subtitle: Text(
+                    tip['description'] ?? 
+                    (tip['details'] != null && tip['details'].isNotEmpty ? tip['details'][0] : 'No description'),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                   trailing: IconButton(
                     icon: const Icon(Icons.favorite, color: Colors.red),
-                    onPressed: () => onRemove(tip['title']),
+                    onPressed: () => onRemove(tip['title'] ?? ''),
                   ),
                   onTap: () {
                     if (tip['details'] != null) {
@@ -801,10 +637,10 @@ class FavoritesScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => DiseaseDetailScreen(
-                            title: tip['title'],
-                            icon: tip['icon'],
-                            color: tip['color'],
-                            details: tip['details'],
+                            title: tip['title'] ?? 'Unknown Disease',
+                            icon: tip['icon'] ?? Icons.warning,
+                            color: tip['color'] ?? Colors.red,
+                            details: tip['details'] ?? ['No details available'],
                             onAddFavorite: () {}, // Empty callback for favorites
                           ),
                         ),
@@ -814,8 +650,8 @@ class FavoritesScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => TipDetailScreen(
-                            title: tip['title'],
-                            description: tip['description'] ?? '',
+                            title: tip['title'] ?? 'No Title',
+                            description: tip['description'] ?? 'No description available',
                             onAddFavorite: () {}, // Empty callback for favorites
                           ),
                         ),
