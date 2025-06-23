@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const MyApp());
@@ -30,12 +33,51 @@ class _HomeScreenState extends State<HomeScreen> {
   int _soilMoisture = 65;
   bool _isWatering = false;
   DateTime? _lastWateredTime;
+  List<dynamic> _agricultureNews = [];
+  bool _isLoadingNews = false;
 
   final List<Map<String, dynamic>> _weatherForecast = [
     {'day': 'Hari Ini', 'icon': Icons.wb_sunny, 'temp': '28°C/23°C', 'rainChance': 20},
     {'day': 'Besok', 'icon': Icons.cloud, 'temp': '27°C/22°C', 'rainChance': 40},
     {'day': 'Lusa', 'icon': Icons.thunderstorm, 'temp': '26°C/21°C', 'rainChance': 70},
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchAgricultureNews();
+  }
+
+  Future<void> _fetchAgricultureNews() async {
+    setState(() => _isLoadingNews = true);
+    try {
+      final response = await http.get(Uri.parse(
+          'https://newsapi.org/v2/everything?q=pertanian OR "pertanian organik" OR "teknologi pertanian"&language=id&sortBy=publishedAt&apiKey=1bc708b449ea4622888d8a672dae1136'));
+      
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          _agricultureNews = data['articles'] ?? [];
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memuat berita: $e')),
+      );
+    } finally {
+      setState(() => _isLoadingNews = false);
+    }
+  }
+
+  Future<void> _launchUrl(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Tidak dapat membuka berita')),
+      );
+    }
+  }
 
   Color _getMoistureColor(int moisture) {
     if (moisture < 30) return Colors.red;
@@ -96,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _soilMoisture = (65 + DateTime.now().second % 10 - 5).clamp(20, 90);
     });
+    _fetchAgricultureNews();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Data diperbarui')),
     );
@@ -127,7 +170,6 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Weather Card
             Card(
               elevation: 3,
               child: Padding(
@@ -163,7 +205,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Soil Moisture Card
             Card(
               elevation: 3,
               child: Padding(
@@ -202,7 +243,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Watering Schedule Card
             Card(
               elevation: 3,
               child: Padding(
@@ -230,7 +270,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Weather Forecast
             SizedBox(
               height: 120,
               child: ListView(
@@ -243,10 +282,83 @@ class _HomeScreenState extends State<HomeScreen> {
                 )).toList(),
               ),
             ),
+            const SizedBox(height: 16),
+
+            const Text(
+              'Berita Pertanian Terkini',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _isLoadingNews
+                ? const Center(child: CircularProgressIndicator())
+                : _agricultureNews.isEmpty
+                    ? const Text('Tidak ada berita ditemukan')
+                    : SizedBox(
+                        height: 200,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: _agricultureNews.length > 5 ? 5 : _agricultureNews.length,
+                          itemBuilder: (context, index) {
+                            final news = _agricultureNews[index];
+                            return GestureDetector(
+                              onTap: () {
+                                if (news['url'] != null) {
+                                  _launchUrl(news['url']);
+                                }
+                              },
+                              child: Card(
+                                margin: const EdgeInsets.only(right: 8),
+                                child: SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      if (news['urlToImage'] != null)
+                                        Expanded(
+                                          child: Image.network(
+                                            news['urlToImage'],
+                                            width: double.infinity,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) => 
+                                              Container(color: Colors.grey[200]),
+                                          ),
+                                        ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              news['title'] ?? 'Judul tidak tersedia',
+                                              maxLines: 2,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              news['source']['name'] ?? 'Sumber tidak diketahui',
+                                              style: TextStyle(
+                                                color: Colors.grey[600],
+                                                fontSize: 12,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ),
           ],
         ),
       ),
-      // Bottom navigation bar has been removed
     );
   }
 }
