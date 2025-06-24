@@ -35,17 +35,115 @@ class _HomeScreenState extends State<HomeScreen> {
   DateTime? _lastWateredTime;
   List<dynamic> _agricultureNews = [];
   bool _isLoadingNews = false;
+  String _selectedCity = 'Jakarta';
+  Map<String, dynamic> _currentWeather = {};
+  bool _isLoadingWeather = false;
+  List<Map<String, dynamic>> _weatherForecast = [];
 
-  final List<Map<String, dynamic>> _weatherForecast = [
-    {'day': 'Hari Ini', 'icon': Icons.wb_sunny, 'temp': '28°C/23°C', 'rainChance': 20},
-    {'day': 'Besok', 'icon': Icons.cloud, 'temp': '27°C/22°C', 'rainChance': 40},
-    {'day': 'Lusa', 'icon': Icons.thunderstorm, 'temp': '26°C/21°C', 'rainChance': 70},
+  final List<Map<String, dynamic>> _indonesianCities = [
+    {'name': 'Jakarta', 'lat': -6.2088, 'lon': 106.8456},
+    {'name': 'Bandung', 'lat': -6.9175, 'lon': 107.6191},
+    {'name': 'Surabaya', 'lat': -7.2575, 'lon': 112.7521},
+    {'name': 'Medan', 'lat': 3.5952, 'lon': 98.6722},
+    {'name': 'Semarang', 'lat': -6.9667, 'lon': 110.4167},
+    {'name': 'Makassar', 'lat': -5.1477, 'lon': 119.4327},
+    {'name': 'Palembang', 'lat': -2.9909, 'lon': 104.7565},
+    {'name': 'Denpasar', 'lat': -8.6705, 'lon': 115.2126},
+    {'name': 'Yogyakarta', 'lat': -7.7956, 'lon': 110.3695},
+    {'name': 'Malang', 'lat': -7.9666, 'lon': 112.6326},
   ];
 
   @override
   void initState() {
     super.initState();
     _fetchAgricultureNews();
+    _fetchWeatherData();
+  }
+
+  Future<void> _fetchWeatherData() async {
+    setState(() => _isLoadingWeather = true);
+    try {
+      final city = _indonesianCities.firstWhere(
+        (city) => city['name'] == _selectedCity,
+        orElse: () => _indonesianCities[0],
+      );
+      
+      // Ganti dengan API key OpenWeatherMap Anda
+      const apiKey = '67e3e79b384822b26103dc2c2dfe8c93';
+      
+      // Current weather
+      final currentResponse = await http.get(Uri.parse(
+          'https://api.openweathermap.org/data/2.5/weather?lat=${city['lat']}&lon=${city['lon']}&units=metric&appid=$apiKey&lang=id'));
+      
+      // Forecast (5 days)
+      final forecastResponse = await http.get(Uri.parse(
+          'https://api.openweathermap.org/data/2.5/forecast?lat=${city['lat']}&lon=${city['lon']}&units=metric&appid=$apiKey&lang=id&cnt=5'));
+      
+      if (currentResponse.statusCode == 200 && forecastResponse.statusCode == 200) {
+        final currentData = json.decode(currentResponse.body);
+        final forecastData = json.decode(forecastResponse.body);
+        
+        setState(() {
+          _currentWeather = {
+            'temp': currentData['main']['temp'].round(),
+            'description': currentData['weather'][0]['description'],
+            'humidity': currentData['main']['humidity'],
+            'icon': _getWeatherIcon(currentData['weather'][0]['icon']),
+            'rain': currentData['rain']?['1h'] ?? 0,
+          };
+          
+          _weatherForecast = [];
+          for (int i = 0; i < 3; i++) {
+            final forecast = forecastData['list'][i];
+            _weatherForecast.add({
+              'day': i == 0 ? 'Hari Ini' : i == 1 ? 'Besok' : 'Lusa',
+              'icon': _getWeatherIcon(forecast['weather'][0]['icon']),
+              'temp': '${forecast['main']['temp_max'].round()}°C/${forecast['main']['temp_min'].round()}°C',
+              'rainChance': (forecast['pop'] * 100).round(),
+            });
+          }
+        });
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Gagal memuat data cuaca: $e')),
+      );
+    } finally {
+      setState(() => _isLoadingWeather = false);
+    }
+  }
+
+  IconData _getWeatherIcon(String iconCode) {
+    switch (iconCode) {
+      case '01d':
+      case '01n':
+        return Icons.wb_sunny;
+      case '02d':
+      case '02n':
+        return Icons.cloud;
+      case '03d':
+      case '03n':
+      case '04d':
+      case '04n':
+        return Icons.cloud_queue;
+      case '09d':
+      case '09n':
+        return Icons.grain;
+      case '10d':
+      case '10n':
+        return Icons.beach_access;
+      case '11d':
+      case '11n':
+        return Icons.flash_on;
+      case '13d':
+      case '13n':
+        return Icons.ac_unit;
+      case '50d':
+      case '50n':
+        return Icons.cloud;
+      default:
+        return Icons.wb_sunny;
+    }
   }
 
   Future<void> _fetchAgricultureNews() async {
@@ -139,6 +237,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _soilMoisture = (65 + DateTime.now().second % 10 - 5).clamp(20, 90);
     });
     _fetchAgricultureNews();
+    _fetchWeatherData();
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Data diperbarui')),
     );
@@ -170,41 +269,74 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Weather Card (Updated)
             Card(
               elevation: 3,
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Row(
+                child: Column(
                   children: [
-                    const Icon(Icons.wb_sunny, size: 50, color: Colors.amber),
-                    const SizedBox(width: 16),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '28°C',
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
+                    DropdownButton<String>(
+                      value: _selectedCity,
+                      items: _indonesianCities.map((city) {
+                        return DropdownMenuItem<String>(
+                          value: city['name'],
+                          child: Text(city['name']),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        if (newValue != null) {
+                          setState(() {
+                            _selectedCity = newValue;
+                          });
+                          _fetchWeatherData();
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 16),
+                    _isLoadingWeather
+                        ? const CircularProgressIndicator()
+                        : Row(
+                            children: [
+                              Icon(
+                                _currentWeather['icon'] ?? Icons.wb_sunny,
+                                size: 50,
+                                color: Colors.amber,
+                              ),
+                              const SizedBox(width: 16),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${_currentWeather['temp'] ?? '--'}°C',
+                                    style: const TextStyle(
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    _currentWeather['description'] ?? 'Memuat...',
+                                    style: const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              const Spacer(),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text('Kelembaban: ${_currentWeather['humidity'] ?? '--'}%'),
+                                  Text('Hujan: ${_currentWeather['rain'] ?? '0'} mm'),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                        const Text('Cerah Berawan'),
-                      ],
-                    ),
-                    const Spacer(),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        const Text('Kelembaban: 75%'),
-                        const Text('Peluang Hujan: 20%'),
-                      ],
-                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 16),
 
+            // Soil Moisture Card
             Card(
               elevation: 3,
               child: Padding(
@@ -243,6 +375,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
+            // Watering Schedule Card
             Card(
               elevation: 3,
               child: Padding(
@@ -270,6 +403,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
+            // Weather Forecast (Now using real data)
             SizedBox(
               height: 120,
               child: ListView(
@@ -284,6 +418,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             const SizedBox(height: 16),
 
+            // Berita Pertanian
             const Text(
               'Berita Pertanian Terkini',
               style: TextStyle(
